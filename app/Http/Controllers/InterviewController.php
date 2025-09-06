@@ -12,7 +12,7 @@ class InterviewController extends Controller
     {
         try {
             $page = $request->get('page', 1);
-            $limit = $request->get('limit'); // no default
+            $limit = $request->get('limit');
             $order = $request->get('order', 'desc');
 
             $difficultyLevel = $request->get('difficultyLevel');
@@ -20,7 +20,6 @@ class InterviewController extends Controller
 
             $query = Interview::query();
 
-            // Use correct column names (camelCase)
             if ($difficultyLevel) {
                 $query->where('difficultyLevel', $difficultyLevel);
             }
@@ -44,7 +43,7 @@ class InterviewController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong',
+                'message' => 'Something went wrong while fetching interviews',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -68,12 +67,7 @@ class InterviewController extends Controller
                 ], 422);
             }
 
-            $interview = Interview::create([
-                'question' => $request->question,
-                'answer' => $request->answer,
-                'difficultyLevel' => $request->difficultyLevel, // use camelCase
-                'categoryId' => $request->categoryId,           // use camelCase
-            ]);
+            $interview = Interview::create($validator->validated());
 
             return response()->json([
                 'success' => true,
@@ -83,7 +77,7 @@ class InterviewController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong',
+                'message' => 'Something went wrong while creating interview',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -106,11 +100,11 @@ class InterviewController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Interview deleted successfully'
-            ], 200);
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong',
+                'message' => 'Something went wrong while deleting interview',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -144,12 +138,7 @@ class InterviewController extends Controller
                 ], 404);
             }
 
-            $interview->update([
-                'question' => $request->question,
-                'answer' => $request->answer,
-                'difficultyLevel' => $request->difficultyLevel, // camelCase
-                'categoryId' => $request->categoryId,           // camelCase
-            ]);
+            $interview->update($validator->validated());
 
             return response()->json([
                 'success' => true,
@@ -159,7 +148,7 @@ class InterviewController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong',
+                'message' => 'Something went wrong while updating interview',
                 'error' => $e->getMessage()
             ], 500);
         }
