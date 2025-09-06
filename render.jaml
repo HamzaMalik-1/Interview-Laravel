@@ -19,7 +19,7 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_KEY
-        value: base64:qvLqyYVTMJBi5DtKRLNgR8x47ahIjLBzc2v1/lwI6yE=
+        value: base64:X5TNN09jX9GkcNRZUI9p8eMajotF7JdIX17tVl8nOjU=
         sync: false
       - key: APP_URL
         value: https://interview-laravel.onrender.com
