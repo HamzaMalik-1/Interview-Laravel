@@ -7,13 +7,14 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
         try {
-            // ✅ Validate request
+            // Validate request
             $request->validate([
                 'email' => 'nullable|email|required_without:username',
                 'username' => 'nullable|string|required_without:email',
@@ -25,11 +26,11 @@ class AuthController extends Controller
                 'password.required' => 'Password is required'
             ]);
 
-            // ✅ Determine login field
+            // Determine login field
             $loginField = $request->filled('email') ? 'email' : 'username';
             $loginValue = $request->input($loginField);
 
-            // ✅ Find user
+            // Find user
             $user = User::where($loginField, $loginValue)->first();
 
             if (!$user || !Hash::check($request->password, $user->password)) {
@@ -39,7 +40,7 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            // ✅ Check if user is active
+            // Check if user is active
             if (!$user->isActive) {
                 return response()->json([
                     'success' => false,
@@ -47,7 +48,7 @@ class AuthController extends Controller
                 ], 403);
             }
 
-            // ✅ Create API token (Laravel Sanctum)
+            // Create API token (Laravel Sanctum)
             $token = $user->createToken('api-token')->plainTextToken;
             $user->remember_token = $token;
             $user->save();
@@ -63,6 +64,11 @@ class AuthController extends Controller
 
         } catch (ValidationException $e) {
             // Handle validation errors
+            Log::warning('Login validation failed', [
+                'errors' => $e->errors(),
+                'request' => $request->all()
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
@@ -70,11 +76,18 @@ class AuthController extends Controller
             ], 422);
 
         } catch (Exception $e) {
-            // Handle all other errors
+            // Log unexpected errors
+            Log::error('Login error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all()
+            ]);
+
+            // Return generic message to client
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong',
-                'error' => $e->getMessage() // ⚠️ Remove in production for security
+                // 'error' => $e->getMessage() // optional, remove in production
             ], 500);
         }
     }
