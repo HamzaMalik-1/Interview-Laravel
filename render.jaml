@@ -5,7 +5,7 @@ services:
     plan: free   # upgrade if free plan sleeps too much
     buildCommand: |
       apt-get update && apt-get install -y libpq-dev
-      docker-php-ext-install pdo pdo_pgsql pgsql
+      docker-php-ext-install pdo pdo_pgsql
       composer install --optimize-autoloader --no-dev
       php artisan config:cache
       php artisan route:cache
@@ -13,6 +13,7 @@ services:
     startCommand: php artisan serve --host 0.0.0.0 --port $PORT
     postDeployCommand: php artisan migrate --force --seed
     envVars:
+      # App settings
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
@@ -20,9 +21,9 @@ services:
       - key: APP_KEY
         sync: false   # generate locally with `php artisan key:generate --show` & add in Render dashboard
       - key: APP_URL
-        value: https://your-app.onrender.com
+        value: https://interview-laravel.onrender.com
 
-      # Database config (auto-fills from Render DB service)
+      # Database config (auto-filled from Render DB service)
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
