@@ -2,8 +2,10 @@ services:
   - type: web
     name: laravel-app
     env: php
-    plan: free   # upgrade to starter/standard if free plan sleeps too much
+    plan: free   # upgrade if free plan sleeps too much
     buildCommand: |
+      apt-get update && apt-get install -y libpq-dev
+      docker-php-ext-install pdo pdo_pgsql
       composer install --optimize-autoloader --no-dev
       php artisan config:cache
       php artisan route:cache
@@ -45,7 +47,7 @@ services:
           property: password
 
 databases:
-  - name: interview_prep   # this must exactly match your new DB name in Render
+  - name: interview_prep   # must exactly match your database service name in Render
     plan: free
-    databaseName: interview_7piq   # internal DB name from Render dashboard
+    databaseName: interview_7piq   # actual DB name from Render dashboard
     user: root
