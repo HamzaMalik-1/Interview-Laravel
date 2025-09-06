@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: laravel-app
+    env: php
+    plan: free   # or starter, standard
+    buildCommand: |
+      composer install --optimize-autoloader --no-dev
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+    startCommand: php artisan serve --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        sync: false   # generate locally & add in Render dashboard
+      - key: APP_URL
+        value: https://your-app.onrender.com
+      # Database vars will go here if you add PostgreSQL/MySQL

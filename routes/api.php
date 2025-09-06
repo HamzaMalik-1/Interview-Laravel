@@ -21,6 +21,6 @@ Route::get('/interview',[InterviewController::class,'getAllOrPagination'])->name
 
 Route::post('/add-interview',[InterviewController::class,'addInterview'])->name('interview');
 
-Route::delete('/interview/{id}',[InterviewController::class,'deleteInterview'])->name('deleteInterview');
+Route::get('/delete-interview/{id}',[InterviewController::class,'deleteInterview'])->name('deleteInterview');
 
-Route::patch('/interview',[InterviewController::class,'editInterview'])->name('editInterview');
+Route::post('/edit-interview',[InterviewController::class,'editInterview'])->name('editInterview');
