@@ -2,22 +2,21 @@ services:
   - type: web
     name: laravel-app
     env: php
-    plan: free   # change to starter/standard if needed
+    plan: free   # upgrade to starter/standard if free plan sleeps too much
     buildCommand: |
       composer install --optimize-autoloader --no-dev
       php artisan config:cache
       php artisan route:cache
       php artisan view:cache
     startCommand: php artisan serve --host 0.0.0.0 --port $PORT
-    postDeployCommand: |
-      php artisan migrate --force --seed
+    postDeployCommand: php artisan migrate --force --seed
     envVars:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: false
       - key: APP_KEY
-        sync: false   # generate locally & add in Render dashboard
+        sync: false   # generate locally with `php artisan key:generate --show` & add in Render dashboard
       - key: APP_URL
         value: https://your-app.onrender.com
 
@@ -26,27 +25,27 @@ services:
         value: pgsql
       - key: DB_HOST
         fromDatabase:
-          name: interview_gfq7   # match your DB service name
+          name: interview_prep   # must match your database service name
           property: host
       - key: DB_PORT
         fromDatabase:
-          name: interview_gfq7
+          name: interview_prep
           property: port
       - key: DB_DATABASE
         fromDatabase:
-          name: interview_gfq7
+          name: interview_prep
           property: database
       - key: DB_USERNAME
         fromDatabase:
-          name: interview_gfq7
+          name: interview_prep
           property: user
       - key: DB_PASSWORD
         fromDatabase:
-          name: interview_gfq7
+          name: interview_prep
           property: password
 
 databases:
-  - name: interview_gfq7
+  - name: interview_prep   # this must exactly match your new DB name in Render
     plan: free
-    databaseName: interview_gfq7
-    user: laravel
+    databaseName: interview_7piq   # internal DB name from Render dashboard
+    user: root
