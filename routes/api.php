@@ -7,10 +7,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InterviewController;
 
-// Get authenticated user
-Route::get('/user', function (Request $request) {
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+});
 
 // Authentication
 Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -19,10 +24,10 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/admin', [UserController::class, 'getAdmin'])->name('admin.get');
 
 // Categories
-Route::get('/categories', [CategoryController::class, 'getCategories'])->name('categories.index');
+Route::get('/categories', [CategoryController::class, 'getCategories'])->name('categories.list');
 
 // Interviews
-Route::get('/interview', [InterviewController::class, 'getAllOrPagination'])->name('interview.index');
-Route::post('/add-interview', [InterviewController::class, 'addInterview'])->name('interview.store');
+Route::get('/interview', [InterviewController::class, 'getAllOrPagination'])->name('interview.list');
+Route::post('/add-interview', [InterviewController::class, 'addInterview'])->name('interview.add');
+Route::post('/edit-interview', [InterviewController::class, 'editInterview'])->name('interview.edit');
 Route::get('/delete-interview/{id}', [InterviewController::class, 'deleteInterview'])->name('interview.delete');
-Route::post('/edit-interview', [InterviewController::class, 'editInterview'])->name('interview.update');

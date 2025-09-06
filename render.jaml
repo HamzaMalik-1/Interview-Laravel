@@ -2,10 +2,8 @@ services:
   - type: web
     name: laravel-app
     env: php
-    plan: free   # upgrade if free plan sleeps too much
+    plan: free
     buildCommand: |
-      apt-get update && apt-get install -y libpq-dev
-      docker-php-ext-install pdo pdo_pgsql
       composer install --optimize-autoloader --no-dev
       php artisan config:cache
       php artisan route:cache
@@ -19,36 +17,26 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_KEY
-        value: base64:X5TNN09jX9GkcNRZUI9p8eMajotF7JdIX17tVl8nOjU=
+        value: base64:qvLqyYVTMJBi5DtKRLNgR8x47ahIjLBzc2v1/lwI6yE=
         sync: false
       - key: APP_URL
         value: https://interview-laravel.onrender.com
 
-      # Database config (auto-filled from Render DB service)
+      # Database config
       - key: DB_CONNECTION
-        value: pgsql
+        value: mysql
       - key: DB_HOST
-        fromDatabase:
-          name: interview_prep
-          property: host
+        value: sql100.infinityfree.com
       - key: DB_PORT
-        fromDatabase:
-          name: interview_prep
-          property: port
+        value: 3306
       - key: DB_DATABASE
-        fromDatabase:
-          name: interview_prep
-          property: database
+        value: if0_39858077_interview
       - key: DB_USERNAME
-        fromDatabase:
-          name: interview_prep
-          property: user
+        value: if0_39858077
       - key: DB_PASSWORD
-        fromDatabase:
-          name: interview_prep
-          property: password
+        value: your_mysql_password_here
 
 databases:
   - name: interview_prep   # Render reference name
     plan: free
-    databaseName: interview_7piq   # actual PostgreSQL database name created by Render
+    databaseName: if0_39858077_interview
