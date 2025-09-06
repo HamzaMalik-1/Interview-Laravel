@@ -4,7 +4,8 @@ services:
     env: php
     plan: free   # upgrade if free plan sleeps too much
     buildCommand: |
-      apt-get update && apt-get install -y php-pgsql
+      apt-get update && apt-get install -y libpq-dev
+      docker-php-ext-install pdo pdo_pgsql pgsql
       composer install --optimize-autoloader --no-dev
       php artisan config:cache
       php artisan route:cache
@@ -46,6 +47,6 @@ services:
           property: password
 
 databases:
-  - name: interview_prep   # must exactly match your service name
+  - name: interview_prep   # Render reference name
     plan: free
-    databaseName: interview_7piq   # Render internal DB name
+    databaseName: interview_7piq   # actual PostgreSQL database name created by Render
