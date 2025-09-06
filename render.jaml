@@ -19,7 +19,8 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_KEY
-        sync: false   # generate locally with `php artisan key:generate --show` & add in Render dashboard
+        value: base64:qvLqyYVTMJBi5DtKRLNgR8x47ahIjLBzc2v1/lwI6yE=
+        sync: false
       - key: APP_URL
         value: https://interview-laravel.onrender.com
 
