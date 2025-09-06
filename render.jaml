@@ -4,8 +4,7 @@ services:
     env: php
     plan: free   # upgrade if free plan sleeps too much
     buildCommand: |
-      apt-get update && apt-get install -y libpq-dev
-      docker-php-ext-install pdo pdo_pgsql
+      apt-get update && apt-get install -y php-pgsql
       composer install --optimize-autoloader --no-dev
       php artisan config:cache
       php artisan route:cache
@@ -22,12 +21,12 @@ services:
       - key: APP_URL
         value: https://your-app.onrender.com
 
-      # Database config for Render PostgreSQL
+      # Database config (auto-fills from Render DB service)
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
         fromDatabase:
-          name: interview_prep   # must match your database service name
+          name: interview_prep
           property: host
       - key: DB_PORT
         fromDatabase:
@@ -47,7 +46,6 @@ services:
           property: password
 
 databases:
-  - name: interview_prep   # must exactly match your database service name in Render
+  - name: interview_prep   # must exactly match your service name
     plan: free
-    databaseName: interview_7piq   # actual DB name from Render dashboard
-    user: root
+    databaseName: interview_7piq   # Render internal DB name
