@@ -2,13 +2,15 @@ services:
   - type: web
     name: laravel-app
     env: php
-    plan: free   # or starter, standard
+    plan: free   # change to starter/standard if needed
     buildCommand: |
       composer install --optimize-autoloader --no-dev
       php artisan config:cache
       php artisan route:cache
       php artisan view:cache
     startCommand: php artisan serve --host 0.0.0.0 --port $PORT
+    postDeployCommand: |
+      php artisan migrate --force --seed
     envVars:
       - key: APP_ENV
         value: production
@@ -18,4 +20,33 @@ services:
         sync: false   # generate locally & add in Render dashboard
       - key: APP_URL
         value: https://your-app.onrender.com
-      # Database vars will go here if you add PostgreSQL/MySQL
+
+      # Database config for Render PostgreSQL
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: interview_gfq7   # match your DB service name
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: interview_gfq7
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: interview_gfq7
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: interview_gfq7
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: interview_gfq7
+          property: password
+
+databases:
+  - name: interview_gfq7
+    plan: free
+    databaseName: interview_gfq7
+    user: laravel
