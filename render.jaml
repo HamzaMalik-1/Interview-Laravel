@@ -4,10 +4,13 @@ services:
     env: php
     plan: free
     buildCommand: |
+      apt-get update && apt-get install -y libpq-dev
+      docker-php-ext-install pdo pdo_pgsql
       composer install --optimize-autoloader --no-dev
       php artisan config:cache
       php artisan route:cache
       php artisan view:cache
+
     startCommand: php artisan serve --host 0.0.0.0 --port $PORT
     postDeployCommand: php artisan migrate --force --seed
     envVars:
